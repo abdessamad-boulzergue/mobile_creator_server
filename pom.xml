@@ -11,7 +11,7 @@
 	<groupId>com.creator</groupId>
 	<artifactId>creator-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>mobile-creator-server</name>
 	<description>mobile creator server built on  Spring Boot</description>
 	<properties>

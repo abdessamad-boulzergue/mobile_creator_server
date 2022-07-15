@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  mobile-creator:
+    image: creator/mobile-creator-server:latest
+    restart: on-failure
+    ports:
+      - "8081:8080"
+    networks:
+      - mysql_default
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mysql-db-1:3306/db?allowPublicKeyRetrieval=true&useSSL=false
+
+networks:
+  mysql_default:
+    external: true
