@@ -1,0 +1,14 @@
+{
+  "pluginSources":[
+  				{   "id":"src_1",
+					"type":"socket",
+					"host":"127.0.0.1",
+					"port":"19902"
+				},
+				{
+				"id":"src_2",
+				"type":"java",
+				"package":"com.apos.workflow.plugin"
+				}
+		]
+}
