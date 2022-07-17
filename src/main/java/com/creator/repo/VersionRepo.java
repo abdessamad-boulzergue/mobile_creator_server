@@ -1,13 +1,13 @@
-package com.apos.rest.repo;
+package com.creator.repo;
 
-import java.util.List;
-
+import com.creator.models.ResourceVersion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import com.apos.models.ResourceVersion;
-
+import java.util.List;
+@Repository
 public interface  VersionRepo extends JpaRepository<ResourceVersion, Long> {
 	
 	@Query("FROM ResourceVersion r WHERE r.id = :id")

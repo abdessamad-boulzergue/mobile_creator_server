@@ -54,4 +54,9 @@ public class ResourceVersion {
 	public String getNextVersionName() {
 		 return getNextVersionName(this.name);
 	}
+
+	@Override
+	public boolean equals(Object version){
+		return (version instanceof ResourceVersion) && ((ResourceVersion) version).getId().equals(this.id);
+	}
 }

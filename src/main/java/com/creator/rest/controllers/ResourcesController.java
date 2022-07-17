@@ -4,6 +4,8 @@ package com.creator.rest.controllers;
 import com.creator.models.Resource;
 import com.creator.models.ResourceType;
 import com.creator.services.ResourcesService;
+import com.creator.utils.ResourceTools;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,19 @@ public class ResourcesController {
     ResourcesService resourceService;
 
     @GetMapping("/type/{id}")
-    public ResourceType getType(@PathParam("id") Long id) {
+    public ResourceType getType(@PathVariable("id") Long id) {
        return  resourceService.getType(id);
+    }
+
+    @PostMapping("/{type}/new")
+    public Resource createDocument(@PathVariable("type") String resourceType) {
+
+        Resource resource =  Resource.getResource(resourceType);
+        Resource savedResource = resourceService.saveResource(resource );
+
+
+        return  savedResource;
+
     }
 
     @GetMapping("/types")

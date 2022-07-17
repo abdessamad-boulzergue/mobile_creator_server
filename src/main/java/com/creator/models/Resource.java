@@ -35,7 +35,9 @@ public class Resource {
 	@JoinColumn(name="type_id")
 	@NotNull
 	private ResourceType type ;
-	
+
+
+
 	public Long getId() {
 		return id;
 	}
@@ -130,6 +132,13 @@ public class Resource {
 		resource.setType(Resource.getResourceType(ResourceType.TYPE_DOCUMENT));
 		return resource;
 	}
+	public static Resource getResource(String type) {
+		Resource resource = new Resource();
+		resource.setName("New "+type);
+		resource.setDescription(" new resource of type "+type);
+		resource.setType(Resource.getResourceType(type));
+		return resource;
+	}
 
 	
 	public static Resource getApplicationResource() {
@@ -144,6 +153,7 @@ public class Resource {
 	public JSONObject toJson() {
 		JSONObject obj = new JSONObject();
 		obj.put(ResourceTools.ATTR_RESDESC_ID, this.id);
+		obj.put(ResourceTools.ATTR_TYPE, this.type);
 		obj.put(ResourceTools.ATTR_NAME, this.name);
 		obj.put(ResourceTools.ATTR_VERSION, this.maxVersion.getName());
 		return obj;

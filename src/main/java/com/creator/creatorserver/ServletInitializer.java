@@ -1,5 +1,6 @@
 package com.creator.creatorserver;
 
+import com.creator.CreatorServerApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
