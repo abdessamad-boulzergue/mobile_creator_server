@@ -4,15 +4,14 @@ import com.creator.utils.ResourceTools;
 import org.json.JSONObject;
 
 import javax.persistence.*;
-import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name="resource")
 public class Resource {
 
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -103,19 +102,14 @@ public class Resource {
 	}
 
 	public static ResourceType getResourceType(String type) {
-		
-			ResourceType restype =  new ResourceType();
-			restype.setName(type);
-			return restype;
-		
-		
+		ResourceType restType =  new ResourceType();
+		restType.setName(type);
+		return restType;
 	}
 
 	private void setId(Long id) {
 	   this.id = id;
 	}
-
-
 
 	public static Resource getWorkflowResource() {
 		Resource resource = new Resource();
@@ -132,6 +126,7 @@ public class Resource {
 		resource.setType(Resource.getResourceType(ResourceType.TYPE_DOCUMENT));
 		return resource;
 	}
+
 	public static Resource getResource(String type) {
 		Resource resource = new Resource();
 		resource.setName("New "+type);
@@ -140,7 +135,6 @@ public class Resource {
 		return resource;
 	}
 
-	
 	public static Resource getApplicationResource() {
 		Resource resource = new Resource();
 		resource.setName("New Application");

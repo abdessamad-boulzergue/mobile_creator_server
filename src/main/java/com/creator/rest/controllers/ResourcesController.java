@@ -4,15 +4,14 @@ package com.creator.rest.controllers;
 import com.creator.models.Resource;
 import com.creator.models.ResourceType;
 import com.creator.services.ResourcesService;
-import com.creator.utils.ResourceTools;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.websocket.server.PathParam;
+import java.net.URLDecoder;
 import java.util.List;
 
 @RestController
@@ -33,10 +32,12 @@ public class ResourcesController {
 
         Resource resource =  Resource.getResource(resourceType);
         Resource savedResource = resourceService.saveResource(resource );
-
-
         return  savedResource;
-
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<String> load(@PathVariable(name="id") String id){
+        String resource = resourceService.readResourceFromFile(id);
+        return ResponseEntity.status(HttpStatus.OK).body(resource );
     }
 
     @GetMapping("/types")
@@ -63,7 +64,35 @@ public class ResourcesController {
         return ResponseEntity.status(HttpStatus.OK).body("resource deleted");
 
     }
+    @PostMapping
+    public ResponseEntity<String> save(@RequestBody String jsonString){
 
+        try {
+
+            String content = URLDecoder.decode(jsonString,"utf-8");
+            JSONArray json = new JSONArray(content);
+            JSONObject attributes = json.getJSONObject(1);
+            ResourceType type = resourceService.getType(ResourceType.TYPE_DOCUMENT);
+            Resource resource = Resource.from(attributes);
+            resource.setType(type);
+            Resource savedResource = resourceService.saveResource(resource);
+            if(savedResource!=null && savedResource.getId()>0) {
+                String versionName = savedResource.getMaxVersion().getName();
+                attributes.put("version", versionName);
+                resourceService.writeResourceTofile(String.valueOf(savedResource.getId()), json.toString());
+
+
+            }else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("save failed") ;
+            }
+
+        } catch (Exception e) {
+            String msg = (e!=null)? e.getMessage() : "";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg) ;
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("ok") ;
+
+    }
     @GetMapping
     public ResponseEntity<Object> getResource(@RequestParam("id") Long id) {
 
@@ -76,13 +105,5 @@ public class ResourcesController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> saveResource(@Valid @RequestBody Resource resource) {
-
-        Resource savedResource = resourceService.saveResource(resource);
-        return ResponseEntity.status(HttpStatus.OK).body(savedResource);
-
-
-    }
 
 }

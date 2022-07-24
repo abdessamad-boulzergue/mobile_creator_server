@@ -1,9 +1,11 @@
 package com.creator.services;
 
 import com.creator.exceptions.ResourceNotFoundException;
+import com.creator.models.DocumentData;
 import com.creator.models.Resource;
 import com.creator.models.ResourceType;
 import com.creator.models.ResourceVersion;
+import com.creator.repo.DocumentRepoR;
 import com.creator.repo.ResourceRepo;
 import com.creator.repo.ResourceTypeRepo;
 import com.creator.repo.VersionRepo;
@@ -33,12 +35,13 @@ public class ResourcesService {
 	ResourceRepo resourceRepo;
 
 	@Autowired
+	DocumentRepoR documentRepo;
+
+	@Autowired
 	VersionRepo versionRepo;
 
 	@Autowired
 	ResourceTypeRepo typesRepo;
-
-
 
 	public Resource saveResource(Resource resource) {
 
@@ -71,8 +74,6 @@ public class ResourcesService {
 
 	}
 
-
-
 	public List<ResourceVersion> getResourceVersion(Long resourceId){
 
 		return versionRepo.getResourceVersions(resourceId);
@@ -85,8 +86,6 @@ public class ResourcesService {
 
 	}
 
-
-
 	public ResourceType saveType(ResourceType type)  {
 
 		if(type!=null && type.hasName()) {
@@ -94,9 +93,7 @@ public class ResourcesService {
 			return typesRepo.save(type);
 
 		}else
-
 			throw new IllegalArgumentException("Invalide Type");
-
 	}
 
 	public Resource get(Long id) {
@@ -104,23 +101,15 @@ public class ResourcesService {
 
 	}
 
-
-
 	public ResourceType getType(long id) {
 
 		ResourceType type =  typesRepo.findById(id).orElse(null);
 
 		if(type ==null) {
-
 			throw new ResourceNotFoundException("ResourceType" ,id);
-
 		}
-
 		return type;
-
 	}
-
-
 
 	public List<ResourceType> getTypes() {
 
@@ -128,103 +117,61 @@ public class ResourcesService {
 
 	}
 
-
-
 	public List<Resource> getResources() {
-
 		return resourceRepo.findAll();
-
 	}
-
-
 
 	public ResourceType getType(String typeName) {
-
-		ResourceType type = typesRepo.get(typeName);
-
-		return type;
-
+		return typesRepo.get(typeName);
 	}
-
-
 
 	public void writeResourceTofile(String fileName, String content)  {
-
+		DocumentData doc = new DocumentData();
+		doc.setId(fileName);
+		doc.setContent(content);
+		documentRepo.save(doc);
 		IResource document = new  com.creator.resource.Resource(fileName,fileName, SIZE, new Date());
-
 		resourceLoader.saveResource(document, content.getBytes());
-
 	}
-
-
 
 	public String readResourceFromFile(String fileName) {
 
 		IResource resource= resourceLoader.getResource(fileName);
-
 		String result = null;
 
 		if(resource !=null)
-
 			result= new String(resource.getContent());
-
 		else
-
 			throw new ResourceNotFoundException(fileName);
 
 		return result;
-
 	}
-
-
 
 	public void delete(long id) {
 
 		try {
-
 			resourceRepo.deleteById(id);
-
 			resourceLoader.deleteResource(String.valueOf(id));
 
 		} catch (EmptyResultDataAccessException   e) {
-
 			throw new ResourceNotFoundException(id);
-
 		}
-
 	}
-
-
-
-
-
-
 
 	public String readResourceFromJsonFile(String id) {
-
 		return readResourceFromFile(id.concat(".json"));
-
 	}
-
 
 
 	public String getResourcePath(String id) {
 
 		try {
-
 			return resourceLoader.getResource(id).toFile().getAbsolutePath();
 
 		} catch (IOException e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
-
-
-
 }
 

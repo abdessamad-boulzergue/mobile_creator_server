@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Primary
@@ -20,7 +21,7 @@ public class ResourceLoaderService implements ResourceStorageService {
 	Logger logger = LoggerFactory.getLogger(ResourceLoaderService.class);
 
 	private File storageFile;
-    private String storagePath = System.getProperty("project.resources",".docs");
+    private String storagePath = System.getProperty("project.resources","docs");
 
 	public ResourceLoaderService() {
 		this.storageFile = new File(storagePath);	
@@ -136,28 +137,20 @@ public class ResourceLoaderService implements ResourceStorageService {
 
 	@Override
 	public List<IResource> listResources(Integer page, Integer pageSize) {
-        List<IResource> listOfDocs = new ArrayList<IResource>();
-
         int startIndex = page * pageSize;
         int endIndex = startIndex + pageSize;
 
         File[] documents = storageFile.listFiles();
+		Arrays.sort(documents, Comparator.comparingLong(File::lastModified));
+		// make sure the endIndex is not bigger than amount of files
+		endIndex=  (documents.length < endIndex) ? documents.length : endIndex;
 
-        if (documents == null) { // happens when the docs folder doesn't exist
-            return Collections.emptyList();
-        }
+		return  Arrays.stream(documents)
+				.skip(startIndex)
+				.limit(endIndex-startIndex)
+				.map(file -> getResource(file.getName()))
+				.collect(Collectors.toList());
 
-        // make sure the endIndex is not bigger then amount of files
-        if (documents.length < endIndex) {
-            endIndex = documents.length;
-        }
-        Arrays.sort(documents,
-                Comparator.comparingLong(File::lastModified)
-        );
-        for (int i = startIndex; i < endIndex; i++) {
-            IResource doc = getResource(documents[i].getName());
-            listOfDocs.add(doc);
-        }
-        return listOfDocs;
+
     }
 }
