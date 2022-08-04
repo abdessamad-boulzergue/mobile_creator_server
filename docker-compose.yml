@@ -3,8 +3,8 @@ version: '3.3'
 services:
 
   mobile-creator:
+    container_name: creator-server
     image: creator/mobile-creator-server:latest
-    restart: on-failure
     ports:
       - "8081:8080"
     networks:
@@ -12,11 +12,11 @@ services:
     volumes:
       - creator_resources:/var/lib/creator_server
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://creator-server-creator_mysql_database-1:3306/db?allowPublicKeyRetrieval=true&useSSL=false
-      spring.data.mongodb.uri: mongodb://root:example@mongo:27017/
+      SPRING_DATASOURCE_URL: jdbc:mysql://creator-mysql-db:3306/db?allowPublicKeyRetrieval=true&useSSL=false
+      spring.data.mongodb.uri: mongodb://root:example@creator-mongo-db:27017/
   creator_mysql_database:
+    container_name: creator-mysql-db
     image: mysql
-    restart: always
     environment:
       MYSQL_DATABASE: 'db'
       # So you don't have to use root, but you can if you like
@@ -37,8 +37,8 @@ services:
     volumes:
       - creator_mysql_vm:/var/lib/mysql
   mongo:
+    container_name: creator-mongo-db
     image: mongo
-    restart: always
     environment:
       MONGO_INITDB_DATABASE: mongo
       MONGO_INITDB_ROOT_USERNAME: root
@@ -48,6 +48,7 @@ services:
     ports:
       - 27017:27017
   mongo-express:
+    container_name: creator-mongo-express
     image: mongo-express
     restart: always
     ports:
@@ -57,7 +58,7 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@creator-mongo-db:27017/
 volumes:
   creator_mysql_vm:
   creator_resources:
