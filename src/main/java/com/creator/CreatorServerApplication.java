@@ -26,6 +26,8 @@ public class CreatorServerApplication implements ApplicationRunner {
 
 		if(resourceService.getType(ResourceType.TYPE_DOCUMENT) == null) {
 			resourceService.saveType(Resource.getResourceType(ResourceType.TYPE_DOCUMENT));
+		}if(resourceService.getType(ResourceType.TYPE_APPLICATION) == null) {
+			resourceService.saveType(Resource.getResourceType(ResourceType.TYPE_APPLICATION));
 		}
 	}
 }

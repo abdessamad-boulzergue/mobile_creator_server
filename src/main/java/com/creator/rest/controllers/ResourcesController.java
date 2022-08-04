@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
@@ -64,15 +65,39 @@ public class ResourcesController {
         return ResponseEntity.status(HttpStatus.OK).body("resource deleted");
 
     }
-    @PostMapping
-    public ResponseEntity<String> save(@RequestBody String jsonString){
-
+    @PostMapping("/document")
+    public ResponseEntity<String> saveDocument(@RequestBody String jsonString){
         try {
+            ResourceType type = resourceService.getType(ResourceType.TYPE_DOCUMENT);
+            Resource savedResource = saveResource(jsonString,type );
+            if(savedResource==null && savedResource.getId()<=0) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("save failed") ;
+            }
+        } catch (Exception e) {
+            String msg = (e!=null)? e.getMessage() : "";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg) ;
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("ok") ;
+    }
+    @PostMapping("/application")
+    public ResponseEntity<String> saveApplication(@RequestBody String jsonString){
+        try {
+            ResourceType type = resourceService.getType(ResourceType.TYPE_APPLICATION);
+            Resource savedResource = saveResource(jsonString,type );
+            if(savedResource==null && savedResource.getId()<=0) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("save failed") ;
+            }
+        } catch (Exception e) {
+            String msg = (e!=null)? e.getMessage() : "";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg) ;
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("ok") ;
+    }
+    private Resource saveResource(String jsonString, ResourceType type ) throws UnsupportedEncodingException {
 
             String content = URLDecoder.decode(jsonString,"utf-8");
             JSONArray json = new JSONArray(content);
             JSONObject attributes = json.getJSONObject(1);
-            ResourceType type = resourceService.getType(ResourceType.TYPE_DOCUMENT);
             Resource resource = Resource.from(attributes);
             resource.setType(type);
             Resource savedResource = resourceService.saveResource(resource);
@@ -80,18 +105,11 @@ public class ResourcesController {
                 String versionName = savedResource.getMaxVersion().getName();
                 attributes.put("version", versionName);
                 resourceService.writeResourceTofile(String.valueOf(savedResource.getId()), json.toString());
-
+                return savedResource;
 
             }else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("save failed") ;
+                return null ;
             }
-
-        } catch (Exception e) {
-            String msg = (e!=null)? e.getMessage() : "";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg) ;
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("ok") ;
-
     }
     @GetMapping
     public ResponseEntity<Object> getResource(@RequestParam("id") Long id) {
