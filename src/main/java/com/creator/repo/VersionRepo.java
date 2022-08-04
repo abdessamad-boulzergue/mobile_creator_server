@@ -18,6 +18,7 @@ public interface  VersionRepo extends JpaRepository<ResourceVersion, Long> {
 
 	@Query("FROM ResourceVersion r WHERE r.resource.id = :id")
 	public List<ResourceVersion> getResourceVersions(@Param("id") Long resourceId);
-	
+	public void deleteByResourceId(Long resourceId);
+
 	
 }

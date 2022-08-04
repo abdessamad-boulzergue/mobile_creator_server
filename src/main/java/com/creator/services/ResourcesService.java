@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Date;
@@ -147,9 +148,11 @@ public class ResourcesService {
 		return result;
 	}
 
+	@Transactional
 	public void delete(long id) {
 
 		try {
+			versionRepo.deleteByResourceId(id);
 			resourceRepo.deleteById(id);
 			resourceLoader.deleteResource(String.valueOf(id));
 

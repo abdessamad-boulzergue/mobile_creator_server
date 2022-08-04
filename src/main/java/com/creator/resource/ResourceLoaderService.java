@@ -24,8 +24,14 @@ public class ResourceLoaderService implements ResourceStorageService {
     private String storagePath = System.getProperty("project.resources","docs");
 
 	public ResourceLoaderService() {
-		this.storageFile = new File(storagePath);	
-   }
+		this.storageFile = new File(storagePath);
+		if(!this.storageFile.isDirectory())
+			try {
+				Files.createFile(this.storageFile.toPath());
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
+	}
 	public String getActionsDefinitionPath() {
 		return storagePath;
 	}
