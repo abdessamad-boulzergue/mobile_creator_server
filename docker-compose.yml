@@ -3,20 +3,24 @@ version: '3.3'
 services:
 
   mobile-creator:
+    build: .
     container_name: creator-server
-    image: creator/mobile-creator-server:latest
+    image: creator/creator-server:latest
     ports:
-      - "8081:8080"
+      - "8282:8282"
+    #network_mode: "host"
     networks:
       - creator_server_network
     volumes:
       - creator_resources:/var/lib/creator_server
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://creator-mysql-db:3306/db?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_URL: jdbc:mysql://creator_mysql_database:3306/db?allowPublicKeyRetrieval=true&useSSL=false
       spring.data.mongodb.uri: mongodb://root:example@creator-mongo-db:27017/
+      keycloak.auth-server-url: http://127.0.0.1/keycloak
   creator_mysql_database:
     container_name: creator-mysql-db
     image: mysql
+    restart: on-failure:3
     environment:
       MYSQL_DATABASE: 'db'
       # So you don't have to use root, but you can if you like
@@ -24,7 +28,7 @@ services:
       # You can use whatever password you like
       MYSQL_PASSWORD: 'user'
       # Password for root access
-      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: '@p0s'
     networks:
       - creator_server_network
     ports:
