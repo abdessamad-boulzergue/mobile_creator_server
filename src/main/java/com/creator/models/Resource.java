@@ -91,7 +91,6 @@ public class Resource {
 	}
 
 
-
 	public static Resource from(JSONObject attributes) {
 		Long id = Long.parseLong(attributes.get(ResourceTools.ATTR_RESDESC_ID).toString());
 		String name = attributes.getString(ResourceTools.ATTR_NAME);
@@ -101,9 +100,8 @@ public class Resource {
 		return res;
 	}
 
-	public static ResourceType getResourceType(String type) {
-		ResourceType restType =  new ResourceType();
-		restType.setName(type);
+	public static ResourceType getResourceType(ResourceType.TYPES type) {
+		ResourceType restType =  new ResourceType(type);
 		return restType;
 	}
 
@@ -115,7 +113,7 @@ public class Resource {
 		Resource resource = new Resource();
 		resource.setName("New Workflow");
 		resource.setDescription("workflow");
-		resource.setType(Resource.getResourceType(ResourceType.TYPE_WORKFLOW));
+		resource.setType(Resource.getResourceType(ResourceType.TYPES.WORKFLOW));
 		return resource;
 	}
 	
@@ -123,11 +121,11 @@ public class Resource {
 		Resource resource = new Resource();
 		resource.setName("New Document");
 		resource.setDescription("document editor");
-		resource.setType(Resource.getResourceType(ResourceType.TYPE_DOCUMENT));
+		resource.setType(Resource.getResourceType(ResourceType.TYPES.DOCUMENT));
 		return resource;
 	}
 
-	public static Resource getResource(String type) {
+	public static Resource getResource(ResourceType.TYPES type) {
 		Resource resource = new Resource();
 		resource.setName("New "+type);
 		resource.setDescription(" new resource of type "+type);
@@ -139,7 +137,7 @@ public class Resource {
 		Resource resource = new Resource();
 		resource.setName("New Application");
 		resource.setDescription("mobile application");
-		resource.setType(Resource.getResourceType(ResourceType.TYPE_APPLICATION));
+		resource.setType(Resource.getResourceType(ResourceType.TYPES.APPLICATION));
 		return resource;
 	}
 

@@ -1,0 +1,1 @@
+create table resource_type(name varchar(50));

@@ -31,7 +31,7 @@ public class ResourcesController {
     @PostMapping("/{type}/new")
     public Resource createDocument(@PathVariable("type") String resourceType) {
 
-        Resource resource =  Resource.getResource(resourceType);
+        Resource resource =  Resource.getResource(ResourceType.TYPES.valueOf(resourceType));
         Resource savedResource = resourceService.saveResource(resource );
         return  savedResource;
     }
@@ -68,7 +68,7 @@ public class ResourcesController {
     @PostMapping("/document")
     public ResponseEntity<String> saveDocument(@RequestBody String jsonString){
         try {
-            ResourceType type = resourceService.getType(ResourceType.TYPE_DOCUMENT);
+            ResourceType type = resourceService.getType(ResourceType.TYPES.DOCUMENT.getName());
             Resource savedResource = saveResource(jsonString,type );
             if(savedResource==null && savedResource.getId()<=0) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("save failed") ;
@@ -82,7 +82,7 @@ public class ResourcesController {
     @PostMapping("/application")
     public ResponseEntity<String> saveApplication(@RequestBody String jsonString){
         try {
-            ResourceType type = resourceService.getType(ResourceType.TYPE_APPLICATION);
+            ResourceType type = resourceService.getType(ResourceType.TYPES.APPLICATION.getName());
             Resource savedResource = saveResource(jsonString,type );
             if(savedResource==null && savedResource.getId()<=0) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("save failed") ;

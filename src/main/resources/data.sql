@@ -1,1 +1,0 @@
-INSERT INTO resource_type("name") values("document")

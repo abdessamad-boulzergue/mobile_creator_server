@@ -24,10 +24,10 @@ public class CreatorServerApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 
-		if(resourceService.getType(ResourceType.TYPE_DOCUMENT) == null) {
-			resourceService.saveType(Resource.getResourceType(ResourceType.TYPE_DOCUMENT));
-		}if(resourceService.getType(ResourceType.TYPE_APPLICATION) == null) {
-			resourceService.saveType(Resource.getResourceType(ResourceType.TYPE_APPLICATION));
+		if(resourceService.getType(ResourceType.TYPES.DOCUMENT.getName()) == null) {
+			resourceService.saveType(Resource.getResourceType(ResourceType.TYPES.DOCUMENT));
+		}if(resourceService.getType(ResourceType.TYPES.APPLICATION.getName()) == null) {
+			resourceService.saveType(Resource.getResourceType(ResourceType.TYPES.APPLICATION));
 		}
 	}
 }

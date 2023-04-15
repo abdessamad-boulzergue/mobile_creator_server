@@ -11,6 +11,7 @@ import com.creator.repo.ResourceTypeRepo;
 import com.creator.repo.VersionRepo;
 import com.creator.resource.IResource;
 import com.creator.resource.ResourceLoaderService;
+import com.creator.resource.ResourceStorageService;
 import com.creator.utils.ResourceTools;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class ResourcesService {
 	private static final long SIZE = 1024l;
 
 	@Autowired
-	ResourceLoaderService resourceLoader;
+	ResourceStorageService resourceLoader;
 
 	@Autowired
 	ResourceRepo resourceRepo;
@@ -130,7 +131,6 @@ public class ResourcesService {
 		DocumentData doc = new DocumentData();
 		doc.setId(fileName);
 		doc.setContent(content);
-		documentRepo.save(doc);
 		IResource document = new  com.creator.resource.Resource(fileName,fileName, SIZE, new Date());
 		resourceLoader.saveResource(document, content.getBytes());
 	}
