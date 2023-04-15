@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations="classpath:application-test.properties")
-@PropertySource("application-test.properties")
 @SpringBootTest
 class MobileCreatorServerApplicationDomainTests {
 
